@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Invitado · AUXBROKER</title>
+</head>
+<body>
+  <h1>Acceso Invitado</h1>
+  <form id="formInvitado">
+    <label>Teléfono:</label>
+    <input type="text" id="telefono" required>
+    <label>Clave de acceso:</label>
+    <input type="password" id="clave" required>
+    <button type="submit">Ingresar</button>
+  </form>
+
+  <script type="module">
+    import { supabase } from "/js/supabaseClient.js";
+
+    // Algoritmo para calcular clave
+    function calcularClave(telefono) {
+      if (telefono.length !== 10) return null;
+      const pares = [];
+      for (let i = 0; i < 10; i += 2) {
+        pares.push(parseInt(telefono.substring(i, i+2), 10));
+      }
+      if (pares[2] === 0) pares[2] = pares[0];
+      if (pares[3] === 0) pares[3] = pares[0];
+      if (pares[4] === 0) pares[4] = pares[0];
+
+      const suma = (pares[1] * pares[2]) + (pares[3] * pares[4]);
+      return ("" + suma).slice(-4); // últimos 4 dígitos
+    }
+
+    document.getElementById("formInvitado").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const telefono = document.getElementById("telefono").value.trim();
+      const claveIngresada = document.getElementById("clave").value.trim();
+      const claveCalculada = calcularClave(telefono);
+
+      if (!claveCalculada) {
+        alert("Teléfono inválido.");
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("miembros")
+        .select("*")
+        .eq("telefono", telefono)
+        .eq("plan", "invitado")
+        .single();
+
+      if (error || !data) {
+        alert("❌ Invitado no encontrado.");
+        return;
+      }
+
+      if (claveIngresada !== claveCalculada) {
+        alert("❌ Clave incorrecta.");
+        return;
+      }
+
+      // Guardar datos en sessionStorage
+      sessionStorage.setItem("nombre", data.nombre);
+      sessionStorage.setItem("telefono", data.telefono);
+      sessionStorage.setItem("cupos", data.cupos);
+      sessionStorage.setItem("plan", data.plan);
+
+      // Redirigir
+      window.location.href = "busquedadinamicainvi.html";
+    });
+  </script>
+</body>
+</html>
