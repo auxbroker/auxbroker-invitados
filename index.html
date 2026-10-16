@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Login Invitado · AUXBROKER</title>
+  <!-- ✅ Ruta relativa al CSS -->
+  <link rel="stylesheet" href="./assets/styles.css">
 </head>
 <body>
   <h1>Acceso Invitado</h1>
@@ -14,11 +16,9 @@
     <button type="submit">Ingresar</button>
   </form>
 
+  <!-- ✅ Script como módulo con ruta relativa -->
   <script type="module">
-    
     import { supabase } from "./js/supabaseClient.js";
-
-
 
     // Algoritmo para calcular clave
     function calcularClave(telefono) {
@@ -69,8 +69,8 @@
       sessionStorage.setItem("cupos", data.cupos);
       sessionStorage.setItem("plan", data.plan);
 
-      // Redirigir
-      window.location.href = "busquedadinamicainvi.html";
+      // ✅ Redirigir con ruta relativa
+      window.location.href = "./busquedadinamicainvi.html";
     });
   </script>
 </body>
