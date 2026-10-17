@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>AUXBROKER · Dashboard</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header>
+    <h1>AUXBROKER MONTERREY</h1>
+  </header>
+
+  <main>
+    <!-- Información del invitado -->
+    <section id="info-asesor" class="card">
+      <h2>Bienvenido, <span id="nombreAsesor"></span></h2>
+      <p>Teléfono: <span id="telefonoAsesor"></span></p>
+      <p>Cupos disponibles: <span id="cuposAsesor"></span></p>
+    </section>
+
+    <!-- Menú principal -->
+    <nav class="menu">
+      <a href="busquedadinamica.html">🔍 Búsqueda dinámica</a>
+      <a href="ultsolicitudes.html">📑 Últimas solicitudes</a>
+      <a href="seguimientos.html">📌 Seguimientos</a>
+    </nav>
+  </main>
+
+  <script type="module">
+    function cargarDatosInvitado() {
+      const nombre = sessionStorage.getItem("nombreAsesor");
+      const telefono = sessionStorage.getItem("telefonoAsesor");
+      const cupos = sessionStorage.getItem("cuposAsesor");
+      const correo = sessionStorage.getItem("correoUsuario");
+
+      if (!nombre || !telefono || !correo) {
+        alert("❌ No se encontró sesión de invitado, vuelva a iniciar.");
+        window.location.href = "../index.html";
+        return;
+      }
+
+      document.getElementById("nombreAsesor").textContent = nombre;
+      document.getElementById("telefonoAsesor").textContent = telefono;
+      document.getElementById("cuposAsesor").textContent = cupos;
+    }
+
+    cargarDatosInvitado();
+  </script>
+</body>
+</html>
+

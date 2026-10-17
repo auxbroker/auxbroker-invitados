@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Invitado · AUXBROKER</title>
+  <link rel="stylesheet" href="./assets/styles.css">
+  <style>
+    body {
+      background-color: #e6f0fa; /* fondo azul claro */
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #0074d9; /* azul fuerte */
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100vh - 80px);
+    }
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 320px;
+      text-align: center;
+    }
+    .card h2 {
+      margin-bottom: 1rem;
+      color: #0074d9;
+    }
+    .card label {
+      display: block;
+      margin-top: 1rem;
+      text-align: left;
+    }
+    .card input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .card button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 0.7rem;
+      background-color: #0074d9;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .card button:hover {
+      background-color: #005fa3;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AUXBROKER MONTERREY</h1>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Acceso Invitado</h2>
+      <form id="formInvitado">
+        <label>Teléfono:</label>
+        <input type="text" id="telefono" required>
+        <label>Clave de acceso:</label>
+        <input type="password" id="clave" required>
+        <button type="submit">Ingresar</button>
+      </form>
+    </section>
+  </main>
+
+  <script type="module">
+    import { supabase } from "./js/supabaseClient.js";
+
+    function calcularClave(telefono) {
+      if (telefono.length !== 10) return null;
+      const pares = [];
+      for (let i = 0; i < 10; i += 2) {
+        pares.push(parseInt(telefono.substring(i, i+2), 10));
+      }
+      if (pares[2] === 0) pares[2] = pares[0];
+      if (pares[3] === 0) pares[3] = pares[0];
+      if (pares[4] === 0) pares[4] = pares[0];
+
+      const suma = (pares[1] * pares[2]) + (pares[3] * pares[4]);
+      return ("" + suma).slice(-4);
+    }
+
+    document.getElementById("formInvitado").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const telefono = document.getElementById("telefono").value.trim();
+      const claveIngresada = document.getElementById("clave").value.trim();
+      const claveCalculada = calcularClave(telefono);
+
+      if (!claveCalculada) {
+        alert("Teléfono inválido.");
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("miembros")
+        .select("*")
+        .eq("telefono", telefono)
+        .eq("plan", "invitado")
+        .single();
+
+      if (error || !data) {
+        alert("❌ Invitado no encontrado.");
+        return;
+      }
+
+      if (claveIngresada !== claveCalculada) {
+        alert("❌ Clave incorrecta.");
+        return;
+      }
+
+      // Guardar datos en sessionStorage
+      sessionStorage.setItem("nombreAsesor", data.nombre);
+      sessionStorage.setItem("telefonoAsesor", data.telefono);
+      sessionStorage.setItem("cuposAsesor", data.cupos);
+      sessionStorage.setItem("correoUsuario", data.correo);
+
+      // Redirigir al dashboard de invitados
+      window.location.href = "./public/dashboardinvi.html";
+    });
+  </script>
+</body>
+</html>
+

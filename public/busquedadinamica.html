@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>AUXBROKER · Búsqueda dinámica</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header><h1>AUXBROKER MONTERREY</h1></header>
+  <main>
+    <section id="busquedaDinamica" class="card">
+      <h2>🔎 Búsqueda dinámica</h2>
+      <p>
+        Busco quien 
+        <select id="tipoRequerimiento" required>
+          <option value="">Seleccione requerimiento</option>
+          <option value="solicita">solicita</option>
+          <option value="ofrece">ofrece</option>
+        </select>
+        <span id="inmuebleBox"></span>
+        en 
+        <select id="tipoOperacion" required>
+          <option value="">Seleccione operación</option>
+          <option value="renta">renta</option>
+          <option value="venta">venta</option>
+        </select>
+        con precio entre 
+        <input type="text" id="precioMin" placeholder="desde"> y 
+        <input type="text" id="precioMax" placeholder="hasta">
+        en el 
+        <span id="municipioBox"></span>
+      </p>
+      <button id="btnBuscar">Buscar opciones</button>
+      <div id="resultadosBusqueda"></div>
+    </section>
+  </main>
+
+  <!-- Script principal con Contactar y Corregir -->
+  <script type="module" src="../js/busquedadinamica.js"></script>
+</body>
+</html>
+
